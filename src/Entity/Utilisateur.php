@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -48,6 +50,17 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(nullable: true)]
     private ?\DateTime $dateInscription = null;
+
+    /**
+     * @var Collection<int, Piece>
+     */
+    #[ORM\OneToMany(targetEntity: Piece::class, mappedBy: 'vendeur')]
+    private Collection $pieces;
+
+    public function __construct()
+    {
+        $this->pieces = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -198,6 +211,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDateInscription(?\DateTime $dateInscription): static
     {
         $this->dateInscription = $dateInscription;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Piece>
+     */
+    public function getPieces(): Collection
+    {
+        return $this->pieces;
+    }
+
+    public function addPiece(Piece $piece): static
+    {
+        if (!$this->pieces->contains($piece)) {
+            $this->pieces->add($piece);
+            $piece->setVendeur($this);
+        }
+
+        return $this;
+    }
+
+    public function removePiece(Piece $piece): static
+    {
+        if ($this->pieces->removeElement($piece)) {
+            // set the owning side to null (unless already changed)
+            if ($piece->getVendeur() === $this) {
+                $piece->setVendeur(null);
+            }
+        }
 
         return $this;
     }
