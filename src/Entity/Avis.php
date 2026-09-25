@@ -5,7 +5,9 @@ namespace App\Entity;
 use App\Repository\AvisRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
 
+#[ApiResource]
 #[ORM\Entity(repositoryClass: AvisRepository::class)]
 class Avis
 {
@@ -28,11 +30,11 @@ class Avis
 
     #[ORM\ManyToOne(inversedBy: 'avis')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?utilisateur $auteur = null;
+    private ?Utilisateur $auteur = null;
 
     #[ORM\ManyToOne(inversedBy: 'avis')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?piece $piece = null;
+    private ?Piece $piece = null;
 
     public function getId(): ?int
     {
@@ -87,24 +89,24 @@ class Avis
         return $this;
     }
 
-    public function getAuteur(): ?utilisateur
+    public function getAuteur(): ?Utilisateur
     {
         return $this->auteur;
     }
 
-    public function setAuteur(?utilisateur $auteur): static
+    public function setAuteur(?Utilisateur $auteur): static
     {
         $this->auteur = $auteur;
 
         return $this;
     }
 
-    public function getPiece(): ?piece
+    public function getPiece(): ?Piece
     {
         return $this->piece;
     }
 
-    public function setPiece(?piece $piece): static
+    public function setPiece(?Piece $piece): static
     {
         $this->piece = $piece;
 

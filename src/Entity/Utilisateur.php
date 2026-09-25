@@ -8,6 +8,13 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
+
+#[ApiResource(
+    normalizationContext: ['groups' => ['utilisateur:read']],
+    denormalizationContext: ['groups' => ['utilisateur:write']]
+)]
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -30,6 +37,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
+    #[Groups(['user:write'])]
     #[ORM\Column]
     private ?string $password = null;
 
@@ -250,7 +258,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function removePiece(Piece $piece): static
     {
         if ($this->pieces->removeElement($piece)) {
-            // set the owning side to null (unless already changed)
             if ($piece->getVendeur() === $this) {
                 $piece->setVendeur(null);
             }
@@ -280,7 +287,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeCommande(Commande $commande): static
     {
         if ($this->commandes->removeElement($commande)) {
-            // set the owning side to null (unless already changed)
             if ($commande->getAcheteur() === $this) {
                 $commande->setAcheteur(null);
             }
@@ -310,7 +316,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeAvi(Avis $avi): static
     {
         if ($this->avis->removeElement($avi)) {
-            // set the owning side to null (unless already changed)
             if ($avi->getAuteur() === $this) {
                 $avi->setAuteur(null);
             }

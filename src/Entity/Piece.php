@@ -7,7 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
 
+#[ApiResource]
 #[ORM\Entity(repositoryClass: PieceRepository::class)]
 class Piece
 {
@@ -36,19 +38,19 @@ class Piece
 
     #[ORM\ManyToOne(inversedBy: 'pieces')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?marque $marque = null;
+    private ?Marque $marque = null;
 
     #[ORM\ManyToOne(inversedBy: 'pieces')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?modele $modele = null;
+    private ?Modele $modele = null;
 
     #[ORM\ManyToOne(inversedBy: 'pieces')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?categorie $categorie = null;
+    private ?Categorie $categorie = null;
 
     #[ORM\ManyToOne(inversedBy: 'pieces')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?utilisateur $vendeur = null;
+    private ?Utilisateur $vendeur = null;
 
     /**
      * @var Collection<int, Photo>
@@ -152,48 +154,48 @@ class Piece
         return $this;
     }
 
-    public function getMarque(): ?marque
+    public function getMarque(): ?Marque
     {
         return $this->marque;
     }
 
-    public function setMarque(?marque $marque): static
+    public function setMarque(?Marque $marque): static
     {
         $this->marque = $marque;
 
         return $this;
     }
 
-    public function getModele(): ?modele
+    public function getModele(): ?Modele
     {
         return $this->modele;
     }
 
-    public function setModele(?modele $modele): static
+    public function setModele(?Modele $modele): static
     {
         $this->modele = $modele;
 
         return $this;
     }
 
-    public function getCategorie(): ?categorie
+    public function getCategorie(): ?Categorie
     {
         return $this->categorie;
     }
 
-    public function setCategorie(?categorie $categorie): static
+    public function setCategorie(?Categorie $categorie): static
     {
         $this->categorie = $categorie;
 
         return $this;
     }
 
-    public function getVendeur(): ?utilisateur
+    public function getVendeur(): ?Utilisateur
     {
         return $this->vendeur;
     }
 
-    public function setVendeur(?utilisateur $vendeur): static
+    public function setVendeur(?Utilisateur $vendeur): static
     {
         $this->vendeur = $vendeur;
 
@@ -221,7 +223,6 @@ class Piece
     public function removePhoto(Photo $photo): static
     {
         if ($this->photos->removeElement($photo)) {
-            // set the owning side to null (unless already changed)
             if ($photo->getPiece() === $this) {
                 $photo->setPiece(null);
             }
@@ -251,7 +252,6 @@ class Piece
     public function removeLigneCommande(LigneCommande $ligneCommande): static
     {
         if ($this->ligneCommandes->removeElement($ligneCommande)) {
-            // set the owning side to null (unless already changed)
             if ($ligneCommande->getPiece() === $this) {
                 $ligneCommande->setPiece(null);
             }
@@ -281,7 +281,6 @@ class Piece
     public function removeAvi(Avis $avi): static
     {
         if ($this->avis->removeElement($avi)) {
-            // set the owning side to null (unless already changed)
             if ($avi->getPiece() === $this) {
                 $avi->setPiece(null);
             }
