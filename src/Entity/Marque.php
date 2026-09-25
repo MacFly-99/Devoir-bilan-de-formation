@@ -24,9 +24,16 @@ class Marque
     #[ORM\OneToMany(targetEntity: Modele::class, mappedBy: 'marque')]
     private Collection $modeles;
 
+    /**
+     * @var Collection<int, Piece>
+     */
+    #[ORM\OneToMany(targetEntity: Piece::class, mappedBy: 'marque')]
+    private Collection $pieces;
+
     public function __construct()
     {
         $this->modeles = new ArrayCollection();
+        $this->pieces = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -70,6 +77,36 @@ class Marque
             // set the owning side to null (unless already changed)
             if ($modele->getMarque() === $this) {
                 $modele->setMarque(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Piece>
+     */
+    public function getPieces(): Collection
+    {
+        return $this->pieces;
+    }
+
+    public function addPiece(Piece $piece): static
+    {
+        if (!$this->pieces->contains($piece)) {
+            $this->pieces->add($piece);
+            $piece->setMarque($this);
+        }
+
+        return $this;
+    }
+
+    public function removePiece(Piece $piece): static
+    {
+        if ($this->pieces->removeElement($piece)) {
+            // set the owning side to null (unless already changed)
+            if ($piece->getMarque() === $this) {
+                $piece->setMarque(null);
             }
         }
 
