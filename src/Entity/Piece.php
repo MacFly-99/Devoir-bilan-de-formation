@@ -56,9 +56,16 @@ class Piece
     #[ORM\OneToMany(targetEntity: Photo::class, mappedBy: 'piece')]
     private Collection $photos;
 
+    /**
+     * @var Collection<int, LigneCommande>
+     */
+    #[ORM\OneToMany(targetEntity: LigneCommande::class, mappedBy: 'piece')]
+    private Collection $ligneCommandes;
+
     public function __construct()
     {
         $this->photos = new ArrayCollection();
+        $this->ligneCommandes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -210,6 +217,36 @@ class Piece
             // set the owning side to null (unless already changed)
             if ($photo->getPiece() === $this) {
                 $photo->setPiece(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LigneCommande>
+     */
+    public function getLigneCommandes(): Collection
+    {
+        return $this->ligneCommandes;
+    }
+
+    public function addLigneCommande(LigneCommande $ligneCommande): static
+    {
+        if (!$this->ligneCommandes->contains($ligneCommande)) {
+            $this->ligneCommandes->add($ligneCommande);
+            $ligneCommande->setPiece($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLigneCommande(LigneCommande $ligneCommande): static
+    {
+        if ($this->ligneCommandes->removeElement($ligneCommande)) {
+            // set the owning side to null (unless already changed)
+            if ($ligneCommande->getPiece() === $this) {
+                $ligneCommande->setPiece(null);
             }
         }
 
