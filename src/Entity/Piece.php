@@ -62,10 +62,17 @@ class Piece
     #[ORM\OneToMany(targetEntity: LigneCommande::class, mappedBy: 'piece')]
     private Collection $ligneCommandes;
 
+    /**
+     * @var Collection<int, Avis>
+     */
+    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'piece')]
+    private Collection $avis;
+
     public function __construct()
     {
         $this->photos = new ArrayCollection();
         $this->ligneCommandes = new ArrayCollection();
+        $this->avis = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -247,6 +254,36 @@ class Piece
             // set the owning side to null (unless already changed)
             if ($ligneCommande->getPiece() === $this) {
                 $ligneCommande->setPiece(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Avis>
+     */
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
+
+    public function addAvi(Avis $avi): static
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis->add($avi);
+            $avi->setPiece($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAvi(Avis $avi): static
+    {
+        if ($this->avis->removeElement($avi)) {
+            // set the owning side to null (unless already changed)
+            if ($avi->getPiece() === $this) {
+                $avi->setPiece(null);
             }
         }
 
