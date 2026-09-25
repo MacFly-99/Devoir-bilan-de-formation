@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PieceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -47,6 +49,17 @@ class Piece
     #[ORM\ManyToOne(inversedBy: 'pieces')]
     #[ORM\JoinColumn(nullable: false)]
     private ?utilisateur $vendeur = null;
+
+    /**
+     * @var Collection<int, Photo>
+     */
+    #[ORM\OneToMany(targetEntity: Photo::class, mappedBy: 'piece')]
+    private Collection $photos;
+
+    public function __construct()
+    {
+        $this->photos = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -169,6 +182,36 @@ class Piece
     public function setVendeur(?utilisateur $vendeur): static
     {
         $this->vendeur = $vendeur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Photo>
+     */
+    public function getPhotos(): Collection
+    {
+        return $this->photos;
+    }
+
+    public function addPhoto(Photo $photo): static
+    {
+        if (!$this->photos->contains($photo)) {
+            $this->photos->add($photo);
+            $photo->setPiece($this);
+        }
+
+        return $this;
+    }
+
+    public function removePhoto(Photo $photo): static
+    {
+        if ($this->photos->removeElement($photo)) {
+            // set the owning side to null (unless already changed)
+            if ($photo->getPiece() === $this) {
+                $photo->setPiece(null);
+            }
+        }
 
         return $this;
     }
