@@ -5,7 +5,9 @@ namespace App\Entity;
 use App\Repository\LigneCommandeRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
 
+#[ApiResource]
 #[ORM\Entity(repositoryClass: LigneCommandeRepository::class)]
 class LigneCommande
 {
@@ -22,11 +24,11 @@ class LigneCommande
 
     #[ORM\ManyToOne(inversedBy: 'ligneCommandes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?commande $commande = null;
+    private ?Commande $commande = null;
 
     #[ORM\ManyToOne(inversedBy: 'ligneCommandes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?piece $piece = null;
+    private ?Piece $piece = null;
 
     public function getId(): ?int
     {
@@ -57,24 +59,24 @@ class LigneCommande
         return $this;
     }
 
-    public function getCommande(): ?commande
+    public function getCommande(): ?Commande
     {
         return $this->commande;
     }
 
-    public function setCommande(?commande $commande): static
+    public function setCommande(?Commande $commande): static
     {
         $this->commande = $commande;
 
         return $this;
     }
 
-    public function getPiece(): ?piece
+    public function getPiece(): ?Piece
     {
         return $this->piece;
     }
 
-    public function setPiece(?piece $piece): static
+    public function setPiece(?Piece $piece): static
     {
         $this->piece = $piece;
 

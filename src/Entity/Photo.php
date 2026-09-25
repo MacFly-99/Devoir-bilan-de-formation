@@ -4,7 +4,9 @@ namespace App\Entity;
 
 use App\Repository\PhotoRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
 
+#[ApiResource]
 #[ORM\Entity(repositoryClass: PhotoRepository::class)]
 class Photo
 {
@@ -18,7 +20,7 @@ class Photo
 
     #[ORM\ManyToOne(inversedBy: 'photos')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?piece $piece = null;
+    private ?Piece $piece = null;
 
     public function getId(): ?int
     {
@@ -37,12 +39,12 @@ class Photo
         return $this;
     }
 
-    public function getPiece(): ?piece
+    public function getPiece(): ?Piece
     {
         return $this->piece;
     }
 
-    public function setPiece(?piece $piece): static
+    public function setPiece(?Piece $piece): static
     {
         $this->piece = $piece;
 

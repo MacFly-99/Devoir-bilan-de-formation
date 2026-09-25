@@ -6,7 +6,9 @@ use App\Repository\MarqueRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
 
+#[ApiResource]
 #[ORM\Entity(repositoryClass: MarqueRepository::class)]
 class Marque
 {
@@ -74,7 +76,6 @@ class Marque
     public function removeModele(Modele $modele): static
     {
         if ($this->modeles->removeElement($modele)) {
-            // set the owning side to null (unless already changed)
             if ($modele->getMarque() === $this) {
                 $modele->setMarque(null);
             }
@@ -104,7 +105,6 @@ class Marque
     public function removePiece(Piece $piece): static
     {
         if ($this->pieces->removeElement($piece)) {
-            // set the owning side to null (unless already changed)
             if ($piece->getMarque() === $this) {
                 $piece->setMarque(null);
             }
