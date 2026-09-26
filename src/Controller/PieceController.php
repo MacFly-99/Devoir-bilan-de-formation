@@ -21,6 +21,11 @@ class PieceController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function create(Request $request, EntityManagerInterface $em): JsonResponse
     {
+        $user = $this->getUser();
+        if (!$user) {
+        return new JsonResponse(['error' => 'Utilisateur non connecté.'], 401);
+        }
+        
         $data = json_decode($request->getContent(), true);
 
         // Vérification des champs obligatoires
@@ -41,7 +46,10 @@ class PieceController extends AbstractController
         
         // On récupère les entités liées par leur IRI (ex: "/api/marques/1")
         $marque = $em->getRepository(\App\Entity\Marque::class)->find($this->extractIdFromIri($data['marque']));
-        $modele = isset($data['modele']) ? $em->getRepository(\App\Entity\Modele::class)->find($this->extractIdFromIri($data['modele'])) : null;
+        $modele = null;
+        if (!empty($data['modele'])) {
+            $modele = $em->getRepository(\App\Entity\Modele::class)->find($this->extractIdFromIri($data['modele']));
+            }
         $categorie = $em->getRepository(\App\Entity\Categorie::class)->find($this->extractIdFromIri($data['categorie']));
 
         if (!$marque || !$categorie) {
@@ -126,8 +134,9 @@ class PieceController extends AbstractController
      */
     private function extractIdFromIri(?string $iri): ?int
     {
-        if (!$iri) return null;
+        if (empty($iri)) return null;
         $parts = explode('/', $iri);
-        return (int) end($parts);
+        $id = end($parts);
+        return is_numeric($id) ? (int) $id : null;
     }
 }

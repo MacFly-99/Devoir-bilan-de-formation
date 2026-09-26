@@ -41,7 +41,7 @@ class Piece
     private ?Marque $marque = null;
 
     #[ORM\ManyToOne(inversedBy: 'pieces')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Modele $modele = null;
 
     #[ORM\ManyToOne(inversedBy: 'pieces')]
