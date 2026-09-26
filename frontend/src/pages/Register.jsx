@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import authService from '../services/authService';
+import { useToast } from '../context/ToastContext';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ function Register() {
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { addToast } = useToast();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -31,11 +33,17 @@ function Register() {
         role: 'ROLE_USER',
         dateInscription: new Date().toISOString(),
       });
-      alert('Compte créé avec succès ! Connecte-toi maintenant.');
+
+      // Affichage d'un toast de succès
+      addToast('Compte créé avec succès ! Tu peux maintenant te connecter.', 'success');
       navigate('/login');
+      
     } catch (err) {
       console.error("Erreur d'inscription :", err);
-      setError("Impossible de créer le compte. Vérifie tes informations.");
+      // On peut aussi utiliser un toast pour les erreurs
+      const message = err.response?.data?.error || "Impossible de créer le compte.";
+      addToast(message, 'error');
+      setError(message);
     } finally {
       setLoading(false);
     }

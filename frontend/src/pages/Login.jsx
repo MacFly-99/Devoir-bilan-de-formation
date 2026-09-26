@@ -1,26 +1,30 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  
+
   const { login } = useAuth();
+  const { addToast } = useToast();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    
+
     try {
       await login(email, password);
-      navigate('/'); // Redirection vers le catalogue après connexion
+      addToast(`Bienvenue ${email} !`, 'success');
+      navigate('/');
     } catch (err) {
       console.error("Erreur de connexion :", err);
+      addToast('Email ou mot de passe incorrect.', 'error');
       setError("Email ou mot de passe incorrect.");
     } finally {
       setLoading(false);
