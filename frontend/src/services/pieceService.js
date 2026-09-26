@@ -91,6 +91,24 @@ export const pieceService = {
     });
     return response.data['hydra:member'] || response.data;
   },
+
+  // Créer une pièce via le contrôleur sécurisé
+  createPieceSecure: async (pieceData) => {
+    const response = await api.post('/pieces/create', pieceData);
+    return response.data;
+  },
+
+  // Récupérer les pièces de l'utilisateur connecté
+  getMesPieces: async () => {
+    const response = await api.get('/mes-pieces');
+    return response.data;
+  },
+
+  // Supprimer une pièce (avec vérification côté serveur)
+  deletePieceSecure: async (id) => {
+    const response = await api.delete(`/pieces/${id}/delete`);
+    return response.data;
+  },
 };
 
 export default pieceService;
