@@ -5,10 +5,22 @@ export const pieceService = {
    * Récupère la liste de toutes les pièces.
    * On peut passer des filtres en paramètre (ex: { marque: '/api/marques/1', prix: 'ASC' })
    */
-  getAllPieces: async (filters = {}) => {
+    getAllPieces: async (filters = {}) => {
     const response = await api.get('/pieces', { params: filters });
-    // API Platform renvoie les données dans "hydra:member"
-    return response.data['hydra:member'] || response.data;
+    
+    // On vérifie toutes les façons possibles dont l'API peut renvoyer les données
+    if (response.data['hydra:member']) {
+      return response.data['hydra:member']; // Format JSON-LD classique
+    }
+    if (response.data.member) {
+      return response.data.member; // Format JSON-LD alternatif
+    }
+    if (Array.isArray(response.data)) {
+      return response.data; // Si c'est déjà un tableau direct
+    }
+    
+    // En dernier recours, on renvoie un tableau vide pour éviter le crash
+    return [];
   },
 
   /**
