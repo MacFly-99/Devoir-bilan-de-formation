@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import pieceService from './services/pieceService';
 import PieceDetail from './pages/PieceDetail';
+import Login from './pages/Login';
 
 function Catalogue() {
   const [pieces, setPieces] = useState([]);
@@ -63,10 +64,13 @@ function Catalogue() {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Catalogue />} />
-      <Route path="/pieces/:id" element={<PieceDetail />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<Catalogue />} />
+        <Route path="/pieces/:id" element={<PieceDetail />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </>
   );
 }
 
