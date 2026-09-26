@@ -5,6 +5,7 @@ import PieceDetail from './pages/PieceDetail';
 import Login from './pages/Login';
 import Header from './components/Header';
 import Register from './pages/Register';
+import VendrePiece from './pages/VendrePiece';
 
 
 function Catalogue() {
@@ -74,6 +75,7 @@ function App() {
         <Route path="/pieces/:id" element={<PieceDetail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/vendre" element={<VendrePiece />} />
       </Routes>
     </>
   );
