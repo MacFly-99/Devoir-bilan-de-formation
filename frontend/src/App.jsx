@@ -4,6 +4,8 @@ import pieceService from './services/pieceService';
 import PieceDetail from './pages/PieceDetail';
 import Login from './pages/Login';
 import Header from './components/Header';
+import Register from './pages/Register';
+
 
 function Catalogue() {
   const [pieces, setPieces] = useState([]);
@@ -71,6 +73,7 @@ function App() {
         <Route path="/" element={<Catalogue />} />
         <Route path="/pieces/:id" element={<PieceDetail />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </>
   );

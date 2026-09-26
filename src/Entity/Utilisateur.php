@@ -12,8 +12,14 @@ use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
-    normalizationContext: ['groups' => ['utilisateur:read']],
-    denormalizationContext: ['groups' => ['utilisateur:write']]
+    normalizationContext: ['groups' => ['user:read']],
+    denormalizationContext: ['groups' => ['user:write']],
+    // On désactive la création et la modification directe via l'API
+    // pour forcer le passage par notre contrôleur d'inscription
+    operations: [
+        new \ApiPlatform\Metadata\Get(),
+        new \ApiPlatform\Metadata\GetCollection(),
+    ]
 )]
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
