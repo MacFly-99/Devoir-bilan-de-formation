@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import pieceService from '../services/pieceService';
 import referenceService from '../services/referenceService';
-import api from '../services/api';
 
 function VendrePiece() {
   const { user } = useAuth();
@@ -22,8 +21,12 @@ function VendrePiece() {
     categorie: '',
   });
 
+  // Pour optimiser les performances, j'ai fait le choix de charger tous les modèles 
+  // une seule fois au démarrage, puis de les filtrer côté React plutôt que de faire 
+  // un appel API à chaque changement de marque. Cela réduit le nombre de requêtes HTTP.
   const [marques, setMarques] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [allModeles, setAllModeles] = useState([]);
   const [modeles, setModeles] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -35,18 +38,20 @@ function VendrePiece() {
     }
   }, [user, navigate, addToast]);
 
-  // Chargement initial : marques et catégories
+  // Chargement initial : marques, catégories et TOUS les modèles
   useEffect(() => {
     if (!user) return;
 
     const fetchData = async () => {
       try {
-        const [marquesData, categoriesData] = await Promise.all([
+        const [marquesData, categoriesData, modelesData] = await Promise.all([
           referenceService.getAllMarques(),
           referenceService.getAllCategories(),
+          referenceService.getAllModeles(),
         ]);
         setMarques(marquesData);
         setCategories(categoriesData);
+        setAllModeles(modelesData);
       } catch (err) {
         console.error("Erreur de chargement des référentiels :", err);
       }
@@ -54,25 +59,18 @@ function VendrePiece() {
     fetchData();
   }, [user]);
 
-  // Chargement des modèles quand la marque change (dropdown en cascade)
+  // Filtrage LOCAL des modèles quand la marque change (pas d'appel API)
   useEffect(() => {
-    const fetchModeles = async () => {
-      if (!formData.marque) {
-        setModeles([]);
-        return;
-      }
-      try {
-        const marqueId = formData.marque.split('/').pop();
-        const response = await api.get(`/modeles?marque=/api/marques/${marqueId}`);
-        const data = response.data['hydra:member'] || response.data;
-        setModeles(Array.isArray(data) ? data : []);
-      } catch (err) {
-        console.error("Erreur de chargement des modèles :", err);
-        setModeles([]);
-      }
-    };
-    fetchModeles();
-  }, [formData.marque]);
+    if (!formData.marque) {
+      setModeles([]);
+      return;
+    }
+    const marqueId = formData.marque.split('/').pop();
+    const modelesFiltres = allModeles.filter(
+      (m) => m.marque && m.marque.endsWith(`/${marqueId}`)
+    );
+    setModeles(modelesFiltres);
+  }, [formData.marque, allModeles]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
