@@ -3,6 +3,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import pieceService from './services/pieceService';
 import PieceDetail from './pages/PieceDetail';
 import Login from './pages/Login';
+import Header from './components/Header';
 
 function Catalogue() {
   const [pieces, setPieces] = useState([]);
@@ -65,6 +66,7 @@ function Catalogue() {
 function App() {
   return (
     <>
+      <Header />
       <Routes>
         <Route path="/" element={<Catalogue />} />
         <Route path="/pieces/:id" element={<PieceDetail />} />
